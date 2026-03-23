@@ -1,0 +1,10 @@
+model: ollama_chat/qwen3-coder
+auto-commits: true
+auto-test: true
+gitignore: true
+map-tokens: 2048
+map-refresh: auto
+attribute-author: false
+attribute-committer: false
+
+

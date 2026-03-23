@@ -1,0 +1,3 @@
+Read AGENTS.md for all coding rules.
+Preserve existing patterns. Add error handling. Update tests.
+When asked about architecture: read .cascade/decisions.md first.

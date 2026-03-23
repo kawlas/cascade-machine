@@ -1,0 +1,8 @@
+
+# CASCADE Machine
+.cascade/usage.jsonl
+.cascade/experiments/
+.aider*
+!.aider.conf.yml
+.env
+.env.local
