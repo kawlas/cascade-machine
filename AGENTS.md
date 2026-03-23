@@ -1,4 +1,4 @@
-# Hey, you're in the project!
+# Hey! You're in the project!
 
 ## Universal Rules
 - Write clean, readable code with meaningful variable/function names
