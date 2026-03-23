@@ -1,4 +1,4 @@
-# Hey! You're in the project!
+# Hey, you're in the project!
 
 ## Universal Rules
 - Write clean, readable code with meaningful variable/function names
@@ -10,14 +10,3 @@
 - Commit messages: conventional commits (feat:, fix:, refactor:, docs:, test:)
 - When unsure about architecture → ask, don't assume
 - Read .cascade/decisions.md before making architectural changes
-
-
-## Additional Guidelines
-- Follow the existing patterns in the codebase
-- When adding new functionality, look for similar implementations first
-- Keep changes focused: one feature or fix per commit
-- Update documentation when changing public interfaces
-- Use automated code reviews with cloud tools to ensure adherence to best practices
-- Implement automated test generation for edge cases and error handling
-- Maintain up-to-date API documentation using cloud-generated documentation tools
-- Integrate performance monitoring to identify bottlenecks proactively
