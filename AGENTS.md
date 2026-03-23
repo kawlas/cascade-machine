@@ -17,3 +17,7 @@
 - When adding new functionality, look for similar implementations first
 - Keep changes focused: one feature or fix per commit
 - Update documentation when changing public interfaces
+- Use automated code reviews with cloud tools to ensure adherence to best practices
+- Implement automated test generation for edge cases and error handling
+- Maintain up-to-date API documentation using cloud-generated documentation tools
+- Integrate performance monitoring to identify bottlenecks proactively

@@ -1,5 +1,5 @@
 # Project Learnings
 
-Updated manually or by nightly CASCADE analysis.
+Automatically updated by nightly CASCADE analysis using cloud models.
 
 <!-- Add learnings here -->
