@@ -37,12 +37,12 @@ EOF
 chmod +x "$TMP_DIR/bin/curl"
 
 cat > "$TMP_DIR/catalog.tsv" <<'EOF'
-openrouter	openrouter/model-a	openrouter/model-a	free	200000		OPENROUTER_API_KEY
-openrouter	openrouter/model-b	openrouter/model-b	free	200000		OPENROUTER_API_KEY
+fixture	fixture/model-a	openai/model-a	free	200000	https://api.fixture.test/v1	FIXTURE_API_KEY
+fixture	fixture/model-b	openai/model-b	free	200000	https://api.fixture.test/v1	FIXTURE_API_KEY
 EOF
 
 cat > "$TMP_DIR/usage.jsonl" <<'EOF'
-{"date":"2099-01-01","provider":"openrouter","model":"openrouter/model-a","task_type":"code","success":true,"ts":1}
+{"date":"2099-01-01","provider":"fixture","model":"fixture/model-a","task_type":"code","success":true,"ts":1}
 EOF
 
 HEALTH_ENV=(
@@ -55,17 +55,17 @@ HEALTH_ENV=(
     CASCADE_MODEL_HEALTH_ENABLED=true
     CASCADE_MODEL_HEALTH_TTL_SECONDS=3600
     CASCADE_MODEL_HEALTH_PROBE_LIMIT=2
-    OPENROUTER_API_KEY=test
+    FIXTURE_API_KEY=test
     OLLAMA_HOST=http://127.0.0.1:9
 )
 
-PROBE=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh probe --provider openrouter "implement auth")
-BEST=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh best --provider openrouter "implement auth")
-PLAN=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh plan --provider openrouter "implement auth")
+PROBE=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh probe --provider fixture "implement auth")
+BEST=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh best --provider fixture "implement auth")
+PLAN=$(env "${HEALTH_ENV[@]}" bash scripts/router.sh plan --provider fixture "implement auth")
 
-[[ "$PROBE" == *$'openrouter/model-a'*$'fail\tprovider error 503'* ]]
-[[ "$PROBE" == *$'openrouter/model-b'*$'ok\tlive probe ok'* ]]
-[[ "$BEST" == "openrouter/model-b" ]]
+[[ "$PROBE" == *$'fixture/model-a'*$'fail\tprovider error 503'* ]]
+[[ "$PROBE" == *$'fixture/model-b'*$'ok\tlive probe ok'* ]]
+[[ "$BEST" == "fixture/model-b" ]]
 [[ "$PLAN" == *"recent live probe failed"* ]]
-grep -q $'^openrouter/model-a\t' "$TMP_DIR/health.tsv"
-grep -q $'^openrouter/model-b\t' "$TMP_DIR/health.tsv"
+grep -q $'^fixture/model-a\t' "$TMP_DIR/health.tsv"
+grep -q $'^fixture/model-b\t' "$TMP_DIR/health.tsv"

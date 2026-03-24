@@ -26,6 +26,12 @@ cascade_home_dir() {
     printf '%s\n' "${CASCADE_HOME:-$HOME/.cascade}"
 }
 
+cascade_router_script() {
+    local lib_dir
+    lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    printf '%s\n' "$(cd "$lib_dir/.." && pwd)/router.sh"
+}
+
 ensure_parent_dir() {
     local target="$1"
     mkdir -p "$(dirname "$target")"

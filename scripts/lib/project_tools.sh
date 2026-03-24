@@ -22,7 +22,7 @@ detect_lint_cmd() {
     if [ -f "package.json" ]; then
         if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f "eslint.config.js" ] || \
            grep -q '"eslint"' package.json 2>/dev/null; then
-            printf 'npx eslint --fix . 2>/dev/null; npx prettier --write . 2>/dev/null\n'
+            printf 'npx eslint --fix . 2>/dev/null && npx prettier --write . 2>/dev/null\n'
             return
         fi
         [ -f "biome.json" ] && printf 'npx biome check --fix . 2>/dev/null\n'
@@ -30,19 +30,19 @@ detect_lint_cmd() {
     fi
     if [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
         if command -v ruff > /dev/null 2>&1; then
-            printf 'ruff check --fix . 2>/dev/null; ruff format . 2>/dev/null\n'
+            printf 'ruff check --fix . 2>/dev/null && ruff format . 2>/dev/null\n'
             return
         fi
         if command -v black > /dev/null 2>&1; then
-            printf 'black . 2>/dev/null; isort . 2>/dev/null\n'
+            printf 'black . 2>/dev/null && isort . 2>/dev/null\n'
         fi
         return
     fi
     if [ -f "Cargo.toml" ]; then
-        printf 'cargo clippy --fix --allow-dirty 2>/dev/null; cargo fmt 2>/dev/null\n'
+        printf 'cargo clippy --fix --allow-dirty 2>/dev/null && cargo fmt 2>/dev/null\n'
         return
     fi
-    [ -f "go.mod" ] && printf 'gofmt -w . 2>/dev/null; go vet ./... 2>/dev/null\n'
+    [ -f "go.mod" ] && printf 'gofmt -w . 2>/dev/null && go vet ./... 2>/dev/null\n'
 }
 
 git_baseline() {

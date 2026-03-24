@@ -10,16 +10,16 @@ source "$LIB_DIR/router_policy.sh"
 CASCADE_HOME_DIR="$(cascade_home_dir)"
 USAGE_FILE="${CASCADE_USAGE_FILE:-$CASCADE_HOME_DIR/usage.jsonl}"
 LEARNINGS_FILE="${CASCADE_LEARNINGS_FILE:-$CASCADE_HOME_DIR/learnings.jsonl}"
-PROVIDER_FAILURE_FILE="${CASCADE_PROVIDER_FAILURE_FILE:-$CASCADE_HOME_DIR/provider_failures.jsonl}"
+PROVIDER_FAILURE_FILE="${CASCADE_PROVIDER_FAILURE_FILE:-$(dirname "$USAGE_FILE")/provider_failures.jsonl}"
 TODAY="$(date +%Y-%m-%d)"
 MODEL_FAILURE_COOLDOWN="${CASCADE_MODEL_FAILURE_COOLDOWN:-2}"
 PROVIDER_FAILURE_COOLDOWN_SECONDS="${CASCADE_PROVIDER_FAILURE_COOLDOWN_SECONDS:-1800}"
 
 ensure_router_storage() {
-    ensure_parent_dir "$USAGE_FILE"
-    ensure_parent_dir "$LEARNINGS_FILE"
-    ensure_parent_dir "$PROVIDER_FAILURE_FILE"
-    touch "$USAGE_FILE" "$LEARNINGS_FILE" "$PROVIDER_FAILURE_FILE"
+    ensure_parent_dir "$USAGE_FILE" 2>/dev/null || true
+    ensure_parent_dir "$LEARNINGS_FILE" 2>/dev/null || true
+    ensure_parent_dir "$PROVIDER_FAILURE_FILE" 2>/dev/null || true
+    touch "$USAGE_FILE" "$LEARNINGS_FILE" "$PROVIDER_FAILURE_FILE" 2>/dev/null || true
 }
 
 count_today() {

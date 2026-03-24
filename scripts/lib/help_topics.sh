@@ -175,7 +175,7 @@ print_models_help() {
         list_catalog_records | awk -F'\t' '{ printf "%s\t%s\t%s\n", $1, $2, $4 }'
     fi
     if [ -z "$(list_catalog_records)" ]; then
-        echo "No live catalog cached yet. Run: bash ~/.cascade/router.sh refresh"
+        echo "No live catalog cached yet. Run: bash $(cascade_router_script) refresh"
     fi
     echo ""
     echo "Preference commands:"
@@ -197,9 +197,9 @@ recommend_for_task() {
     echo "CASCADE recommend"
     echo "task: $task"
     echo "type: $(classify_task "$task")"
-    echo "best: $(bash "$(cascade_home_dir)/router.sh" best "$task" 2>/dev/null || true)"
+    echo "best: $(bash "$(cascade_router_script)" best "$task" 2>/dev/null || true)"
     echo ""
-    bash "$(cascade_home_dir)/router.sh" plan "$task"
+    bash "$(cascade_router_script)" plan "$task"
 }
 
 print_start_help() {
