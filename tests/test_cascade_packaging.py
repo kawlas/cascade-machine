@@ -51,6 +51,7 @@ class CascadePackagingTests(unittest.TestCase):
             runtime_dir / "help.sh",
             runtime_dir / "router.sh",
             runtime_dir / "lib" / "router_core.sh",
+            runtime_dir / "lib" / "nightly_core.sh",
             runtime_dir / "docs" / "INSTALL.md",
             runtime_dir / "docs" / "COMMANDS.md",
             runtime_dir / ".env",

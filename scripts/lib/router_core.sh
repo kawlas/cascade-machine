@@ -24,8 +24,8 @@ ensure_router_storage() {
 count_today() {
     local provider="$1"
     ensure_router_storage
-    grep "\"provider\":\"$provider\"" "$USAGE_FILE" 2>/dev/null \
-        | grep "\"date\":\"$TODAY\"" \
+    { grep "\"provider\":\"$provider\"" "$USAGE_FILE" 2>/dev/null || true; } \
+        | { grep "\"date\":\"$TODAY\"" || true; } \
         | wc -l \
         | tr -d ' '
 }
