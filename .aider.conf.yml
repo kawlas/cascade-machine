@@ -1,16 +1,6 @@
-models:
-  - name: cloud_model_1
-    type: cloud
-    api_key: YOUR_CLOUD_API_KEY_1
-  - name: cloud_model_2
-    type: cloud
-    api_key: YOUR_CLOUD_API_KEY_2
-  - name: ollama_local
-    type: local
-    path: /path/to/ollama/model
+model: "ollama_chat/qwen3-coder"
 auto-commits: true
 auto-test: true
-auto-documentation: true
 gitignore: true
 map-tokens: 2048
 map-refresh: auto

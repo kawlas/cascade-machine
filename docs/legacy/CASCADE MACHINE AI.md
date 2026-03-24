@@ -23,7 +23,7 @@ text
 ═══════════════════════════════════════════════════════════════════
 WKLEJ TEN PROMPT DO OPENCODE / KILOCODE / AIDER
 ═══════════════════════════════════════════════════════════════════
-
+zatwierdaz
 You are deploying the CASCADE MACHINE AI development framework 
 from the playbook.txt file in the current directory.
 

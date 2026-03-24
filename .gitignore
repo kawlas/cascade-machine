@@ -2,7 +2,16 @@
 # CASCADE Machine
 .cascade/usage.jsonl
 .cascade/experiments/
+.cascade/logs/
+.cascade/bin/
 .aider*
 !.aider.conf.yml
+.aider.tags.cache.v4/
+.opencode/opencode.db
+.opencode/opencode.db-shm
+.opencode/opencode.db-wal
 .env
 .env.local
+docs/legacy/internal/
+examples/test_ollama/__pycache__/
+tests/__pycache__/
