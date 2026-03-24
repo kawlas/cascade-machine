@@ -9,6 +9,7 @@ DOCS_DIR="$CASCADE_DIR/docs"
 CASCADE_TEMPLATE_DIR="$CASCADE_DIR/.cascade"
 LIB_TARGET_DIR="$CASCADE_DIR/lib"
 ENV_FILE="$CASCADE_DIR/.env"
+INSTALL_SOURCE_FILE="$CASCADE_DIR/.install-source"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -102,7 +103,8 @@ copy_runtime_support() {
         copy_entry "${entry%%:*}" "$CASCADE_DIR/${entry##*:}" "$dry_run"
     done
     local lib_file
-    for lib_file in scripts/lib/*.sh; do
+    for lib_file in scripts/lib/*.sh scripts/lib/*.py; do
+        [ -e "$lib_file" ] || continue
         copy_entry "${lib_file#./}" "$LIB_TARGET_DIR/$(basename "$lib_file")" "$dry_run"
     done
 }
@@ -125,6 +127,16 @@ copy_env_template() {
     fi
 }
 
+write_install_metadata() {
+    local dry_run="$1"
+    if [ "$dry_run" = "true" ]; then
+        echo "  [DRY-RUN] write $INSTALL_SOURCE_FILE"
+        return
+    fi
+    printf '%s\n' "$ROOT_DIR" > "$INSTALL_SOURCE_FILE"
+    log_success "Zapisano źródło instalacji"
+}
+
 setup_aliases_block() {
     local dry_run="$1"
     local shell_config
@@ -133,6 +145,7 @@ setup_aliases_block() {
         log_warning "Nie wykryto konfiguracji shella"
         return 0
     fi
+    cleanup_legacy_aliases "$shell_config" "$dry_run"
     if [ "$dry_run" = "true" ]; then
         echo "  [DRY-RUN] Dodam aliasy do $shell_config"
         return
@@ -151,6 +164,24 @@ ALIASES
     log_success "Dodano aliasy do $shell_config"
 }
 
+cleanup_legacy_aliases() {
+    local shell_config="$1"
+    local dry_run="$2"
+    local tmp_file
+    [ -f "$shell_config" ] || return 0
+    if ! grep -q "^alias cascade='~/.cascade/help.sh'$" "$shell_config" 2>/dev/null; then
+        return 0
+    fi
+    if [ "$dry_run" = "true" ]; then
+        echo "  [DRY-RUN] usunę legacy alias cascade z $shell_config"
+        return
+    fi
+    tmp_file="$(mktemp)"
+    grep -v "^alias cascade='~/.cascade/help.sh'$" "$shell_config" > "$tmp_file" || true
+    mv "$tmp_file" "$shell_config"
+    log_success "Usunięto legacy alias cascade z $shell_config"
+}
+
 show_install_summary() {
     echo ""
     echo "╔═══════════════════════════════════════════════════════════╗"
@@ -159,8 +190,9 @@ show_install_summary() {
     echo "║  Katalog instalacji: $CASCADE_DIR"
     echo "║  1. Edytuj ~/.cascade/.env i dodaj klucze API            ║"
     echo "║  2. Uruchom: source ~/.zshrc (lub ~/.bashrc)             ║"
-    echo "║  3. Sprawdź: cascade doctor                              ║"
-    echo "║  4. Zacznij kodować: fast lub heal \"zadanie\"             ║"
+    echo "║  3. Otwórz chat: cascade                                 ║"
+    echo "║  4. Sprawdź: cascade doctor                              ║"
+    echo "║  5. Dashboard: cascade dashboard                         ║"
     echo "╚═══════════════════════════════════════════════════════════╝"
     echo ""
 }

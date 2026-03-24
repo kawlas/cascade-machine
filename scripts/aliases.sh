@@ -21,16 +21,15 @@ ALIASES
 runtime_aliases() {
     cat << 'ALIASES'
 export PATH="$HOME/.cascade:$PATH"
-alias quick='aider --model ollama_chat/devstral-small --auto-commits --yes'
+alias quick='"$HOME/.cascade/help.sh" quick'
 alias fast='aider --model ollama_chat/qwen3-coder --auto-commits --yes'
-alias think='aider --model ollama_chat/deepseek-r1:14b --auto-commits --yes'
-alias cloud='aider --model groq/llama-3.3-70b-versatile --auto-commits --yes'
+alias think='"$HOME/.cascade/help.sh" think'
+alias cloud='"$HOME/.cascade/help.sh" cloud'
 alias smart='aider --model openrouter/mistralai/devstral-2 --auto-commits --yes'
 alias grok='aider --model xai/grok-3-mini --auto-commits --yes'
 alias turbo='aider --model cerebras/llama-3.3-70b --auto-commits --yes'
 alias gem='aider --model gemini/gemini-2.0-flash --auto-commits --yes'
 alias heal="$HOME/.cascade/heal.sh"
-alias cascade="$HOME/.cascade/help.sh"
 alias cascade-init="$HOME/.cascade/init-project.sh"
 alias cascade-status="$HOME/.cascade/help.sh status"
 alias cascade-doctor="$HOME/.cascade/help.sh doctor"
@@ -38,7 +37,21 @@ alias cascade-config="$HOME/.cascade/help.sh config"
 alias cascade-models="$HOME/.cascade/help.sh models"
 alias cascade-logs="$HOME/.cascade/help.sh logs"
 alias cascade-update="$HOME/.cascade/help.sh update"
+alias cascade-sync="$HOME/.cascade/help.sh sync"
+alias cascade-start='source "$HOME/.cascade/.env" 2>/dev/null; source "$HOME/.cascade/aliases.sh" --load >/dev/null 2>&1; echo "CASCADE ready"'
 alias tokens="$HOME/.cascade/router.sh status"
+cascade() {
+    case "${1:-help}" in
+        start|reload|restart)
+            [ -f "$HOME/.cascade/.env" ] && source "$HOME/.cascade/.env"
+            [ -f "$HOME/.cascade/aliases.sh" ] && source "$HOME/.cascade/aliases.sh" --load >/dev/null 2>&1
+            echo "CASCADE ready"
+            ;;
+        *)
+            "$HOME/.cascade/help.sh" "$@"
+            ;;
+    esac
+}
 ALIASES
 }
 

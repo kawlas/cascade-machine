@@ -67,6 +67,7 @@ auto-test: true
 gitignore: true
 map-tokens: 2048
 map-refresh: auto
+show-model-warnings: false
 attribute-author: false
 attribute-committer: false
 $([ -n "$test_cmd" ] && echo "test-cmd: $test_cmd")

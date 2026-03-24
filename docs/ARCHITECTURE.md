@@ -33,8 +33,8 @@ The runtime is mutable and user-specific. It should never be treated as the cano
 - `scripts/aliases.sh` exposes user-facing shell commands.
 - `scripts/lib/` supports the command layer with reusable runtime logic.
 - Main entrypoints:
-  - `heal`
   - `cascade`
+  - `heal`
   - `cascade-init`
   - `tokens`
 
@@ -45,16 +45,18 @@ This layer makes the framework feel like a native CLI instead of a set of loose 
 - Inputs:
   - task text,
   - task classification,
+  - dynamic provider model catalog,
+  - provider health probes,
   - provider daily usage,
   - historical success data.
 - Outputs:
   - best model choice,
   - status information for the user.
 
-Its job is cost-aware orchestration: prefer local Ollama, then use free cloud capacity when needed.
+Its job is cost-aware orchestration: prefer the best currently-available free or prepaid cloud option, then fall back to lightweight local Ollama only when needed.
 
 ### 5. Execution and Recovery Layer
-- `scripts/heal.sh` is the main automation engine.
+- `scripts/heal.sh` is the unattended automation engine behind `heal "task"` and `cascade run "task"`.
 - Responsibilities:
   - classify work,
   - select a model tier,
@@ -93,7 +95,7 @@ This layer closes the loop so the framework can improve model choice and working
 2. User runs `./install.sh`.
 3. Installer copies the packaged files into `~/.cascade` and wires shell aliases.
 4. In a project directory, user runs `cascade-init`.
-5. User works through commands like `heal`, `fast`, `think`, or `cascade doctor`.
+5. User works through commands like `cascade`, `cascade "task"`, `cascade run "task"`, `fast`, `think`, or `cascade doctor`.
 6. Runtime data accumulates in `~/.cascade`.
 7. `nightly.sh` analyzes that data and recommends improvements.
 

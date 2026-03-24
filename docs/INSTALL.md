@@ -88,9 +88,93 @@ Reload your shell:
 source ~/.zshrc  # or source ~/.bashrc
 ```
 
+## Step 4a: Manage Providers Over Time
+
+The router is designed so you can change providers without editing the code.
+
+### Add a built-in provider
+
+Add the key to `~/.cascade/.env` and make sure the provider name is present in:
+
+```bash
+export CASCADE_MODEL_PROVIDERS="openrouter,groq,gemini,cerebras,xai"
+```
+
+### Add a custom provider
+
+For any OpenAI-compatible provider, add:
+
+```bash
+export CASCADE_MODEL_PROVIDERS="openrouter,groq,myprovider"
+export MYPROVIDER_API_KEY="..."
+export CASCADE_PROVIDER_MYPROVIDER_BASE_URL="https://api.example.com/v1"
+export CASCADE_PROVIDER_MYPROVIDER_TIER="prepaid"
+```
+
+Optional overrides:
+
+```bash
+export CASCADE_PROVIDER_MYPROVIDER_MODELS_URL="https://api.example.com/v1/models"
+export CASCADE_PROVIDER_MYPROVIDER_LIMIT="200"
+export CASCADE_PROVIDER_MYPROVIDER_HEALTHCHECK="true"
+export CASCADE_PROVIDER_MYPROVIDER_ENABLED="true"
+```
+
+### Disable a provider temporarily
+
+```bash
+export CASCADE_PROVIDER_GROQ_ENABLED="false"
+```
+
+### Remove a provider completely
+
+1. Remove its name from `CASCADE_MODEL_PROVIDERS`
+2. Delete its API key line
+3. Delete its `CASCADE_PROVIDER_<NAME>_*` lines
+
+### Update limits or pricing tier
+
+If a provider changes its free tier, prepaid credits, or pricing, update:
+
+```bash
+export CASCADE_PROVIDER_OPENROUTER_TIER="paid"
+export CASCADE_PROVIDER_OPENROUTER_LIMIT="50"
+```
+
+Supported tiers used by the ranking:
+
+- `free`
+- `prepaid`
+- `paid`
+- `local`
+
+### Refresh the live model list
+
+```bash
+bash ~/.cascade/router.sh refresh
+bash ~/.cascade/router.sh providers
+bash ~/.cascade/router.sh probe "test task"
+```
+
+### Provider Maintenance Checklist
+
+Run this whenever a provider changes pricing, limits, or availability:
+
+1. Update `~/.cascade/.env`:
+`CASCADE_MODEL_PROVIDERS`, `<NAME>_API_KEY`, `CASCADE_PROVIDER_<NAME>_BASE_URL`,
+`CASCADE_PROVIDER_<NAME>_MODELS_URL`, `CASCADE_PROVIDER_<NAME>_TIER`,
+`CASCADE_PROVIDER_<NAME>_LIMIT`, `CASCADE_PROVIDER_<NAME>_ENABLED`.
+2. `bash ~/.cascade/router.sh refresh`
+3. `bash ~/.cascade/router.sh providers`
+4. `bash ~/.cascade/router.sh probe "test task"`
+5. `bash ~/.cascade/router.sh plan "test task"`
+
 ## Step 5: Verify Installation
 
 ```bash
+# Load current runtime config into this shell
+cascade start
+
 # Run diagnostics
 cascade doctor
 
@@ -115,6 +199,55 @@ ollama list
 ```
 
 ## Post-Installation
+
+### Daily use after opening a new terminal
+
+```bash
+cascade start
+cascade
+```
+
+`cascade` opens the interactive chat on the best available cloud coding model. If cloud is unavailable, CASCADE falls back to local Ollama automatically.
+If `fast` works locally, `cascade` and `cascade "task"` should also be able to reuse that local Ollama setup.
+
+`cascade start` reloads `~/.cascade/.env` and the current aliases in your shell, so you keep using the latest installed runtime without remembering extra setup steps.
+
+If you want the welcome screen with command hints, run `cascade dashboard`.
+
+After that, you usually work with the short aliases you already know:
+
+```bash
+fast "add user authentication"
+think "why does this test fail?"
+quick "fix typo in README"
+smart "refactor auth flow"
+```
+
+Important:
+
+- `cascade "task"` opens the app chat and keeps your task visible when the chat starts.
+- `quick`, `think`, and `cloud` open chat sessions with different routing bias.
+- `fast`, `smart`, `gem`, `grok`, and `turbo` are direct shortcuts to specific models.
+- If one cloud provider hits limits during `cloud`, CASCADE can move to another candidate instead of staying on one fixed model.
+
+Use automatic mode only when you want CASCADE to take over retries, tests, linting, and model switching:
+
+```bash
+cascade run "fix the failing build"
+heal "fix the failing build"
+cascade think "debug flaky login test"
+cascade quick "repair small regression"
+```
+
+### Update runtime after changing this repository
+
+```bash
+cascade sync
+```
+
+This reruns the installer from the repo that last installed `~/.cascade`, so you do not need to remember `./install.sh` every time you change the source code.
+
+You do not need `cascade sync` for normal coding in your own project. Use it only when you changed CASCADE itself in this repository and want to refresh the installed runtime.
 
 ### Initialize Your First Project
 

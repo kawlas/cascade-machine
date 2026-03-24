@@ -35,6 +35,8 @@ Application logic that becomes runnable in the installed environment:
 - `init-project.sh`
 - `nightly.sh`
 
+`heal.sh` remains the self-healing engine, while `cascade` is the human-friendly app entrypoint for interactive chat sessions. Unattended automation is exposed through `heal` and `cascade run`.
+
 ### `scripts/lib/`
 
 Shared shell libraries used by the runtime entrypoints.

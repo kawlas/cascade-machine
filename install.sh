@@ -33,5 +33,6 @@ create_directories "$DRY_RUN"
 copy_runtime_scripts "$DRY_RUN"
 copy_runtime_support "$DRY_RUN"
 copy_env_template "$DRY_RUN"
+write_install_metadata "$DRY_RUN"
 setup_aliases_block "$DRY_RUN"
 show_install_summary

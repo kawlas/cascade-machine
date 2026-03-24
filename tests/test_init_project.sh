@@ -12,3 +12,4 @@ bash scripts/init-project.sh "$WORKDIR/sample-app" --python > /dev/null
 [[ -f "$WORKDIR/sample-app/.cascade/decisions.md" ]]
 grep -q "CASCADE —" "$WORKDIR/sample-app/.cascade/commands.md"
 grep -q "test-cmd: python -m pytest -x -q" "$WORKDIR/sample-app/.aider.conf.yml"
+grep -q "show-model-warnings: false" "$WORKDIR/sample-app/.aider.conf.yml"
