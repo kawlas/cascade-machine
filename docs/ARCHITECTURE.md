@@ -11,6 +11,7 @@ CASCADE Machine is a personal AI development framework that wraps local and clou
 - Key files:
   - `install.sh` installs the framework into `~/.cascade`.
   - `scripts/` contains executable source files copied during installation.
+  - `scripts/lib/` contains shared shell modules used by those entrypoints.
   - `docs/` contains active user and contributor documentation.
   - `.env.cascade` is the safe template for secrets configuration.
 
@@ -30,6 +31,7 @@ The runtime is mutable and user-specific. It should never be treated as the cano
 
 ### 3. Command Layer
 - `scripts/aliases.sh` exposes user-facing shell commands.
+- `scripts/lib/` supports the command layer with reusable runtime logic.
 - Main entrypoints:
   - `heal`
   - `cascade`

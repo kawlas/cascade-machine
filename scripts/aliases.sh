@@ -9,13 +9,21 @@
 
 CASCADE_DIR="$HOME/.cascade"
 
-alias_block() {
+managed_block() {
     cat << 'ALIASES'
-# CASCADE Machine aliases
+# >>> CASCADE Machine >>>
+[ -f "$HOME/.cascade/.env" ] && source "$HOME/.cascade/.env"
+[ -f "$HOME/.cascade/aliases.sh" ] && source "$HOME/.cascade/aliases.sh" --load >/dev/null 2>&1
+# <<< CASCADE Machine <<<
+ALIASES
+}
+
+runtime_aliases() {
+    cat << 'ALIASES'
 export PATH="$HOME/.cascade:$PATH"
+alias quick='aider --model ollama_chat/devstral-small --auto-commits --yes'
 alias fast='aider --model ollama_chat/qwen3-coder --auto-commits --yes'
-alias think='aider --model ollama_chat/deepseek-r1:8b --auto-commits --yes'
-alias quick='aider --model ollama_chat/qwen3:4b --auto-commits --yes'
+alias think='aider --model ollama_chat/deepseek-r1:14b --auto-commits --yes'
 alias cloud='aider --model groq/llama-3.3-70b-versatile --auto-commits --yes'
 alias smart='aider --model openrouter/mistralai/devstral-2 --auto-commits --yes'
 alias grok='aider --model xai/grok-3-mini --auto-commits --yes'
@@ -50,37 +58,19 @@ install_aliases() {
         return 1
     fi
     
-    # Dodaj jeśli nie istnieje
-    if ! grep -q "alias heal=" "$shell_config" 2>/dev/null; then
-        alias_block >> "$shell_config"
+    if ! grep -q "# >>> CASCADE Machine >>>" "$shell_config" 2>/dev/null; then
+        managed_block >> "$shell_config"
         echo "✅ Dodano aliasy do $shell_config"
         echo "   Uruchom: source $shell_config"
     else
-        echo "⚠️  Aliasy już istnieją w $shell_config"
+        echo "⚠️  CASCADE block już istnieje w $shell_config"
     fi
 }
 
 # ─── Load aliases do current shell ───
 load_aliases() {
     export PATH="$CASCADE_DIR:$PATH"
-    alias fast='aider --model ollama_chat/qwen3-coder --auto-commits --yes'
-    alias think='aider --model ollama_chat/deepseek-r1:8b --auto-commits --yes'
-    alias quick='aider --model ollama_chat/qwen3:4b --auto-commits --yes'
-    alias cloud='aider --model groq/llama-3.3-70b-versatile --auto-commits --yes'
-    alias smart='aider --model openrouter/mistralai/devstral-2 --auto-commits --yes'
-    alias grok='aider --model xai/grok-3-mini --auto-commits --yes'
-    alias turbo='aider --model cerebras/llama-3.3-70b --auto-commits --yes'
-    alias gem='aider --model gemini/gemini-2.0-flash --auto-commits --yes'
-    alias heal="$CASCADE_DIR/heal.sh"
-    alias cascade="$CASCADE_DIR/help.sh"
-    alias cascade-init="$CASCADE_DIR/init-project.sh"
-    alias cascade-status="$CASCADE_DIR/help.sh status"
-    alias cascade-doctor="$CASCADE_DIR/help.sh doctor"
-    alias cascade-config="$CASCADE_DIR/help.sh config"
-    alias cascade-models="$CASCADE_DIR/help.sh models"
-    alias cascade-logs="$CASCADE_DIR/help.sh logs"
-    alias cascade-update="$CASCADE_DIR/help.sh update"
-    alias tokens="$CASCADE_DIR/router.sh status"
+    eval "$(runtime_aliases)"
     echo "✅ Aliasy załadowane"
 }
 
@@ -88,7 +78,7 @@ load_aliases() {
 case "${1:-}" in
     --install|-i) install_aliases ;;
     --load|-l) load_aliases ;;
-    --show|-s) alias_block ;;
+    --show|-s) runtime_aliases ;;
     *)
         echo "CASCADE Machine — Shell Aliases"
         echo ""

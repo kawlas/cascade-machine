@@ -35,6 +35,12 @@ Application logic that becomes runnable in the installed environment:
 - `init-project.sh`
 - `nightly.sh`
 
+### `scripts/lib/`
+
+Shared shell libraries used by the runtime entrypoints.
+
+This is where reusable logic should go first when a script starts growing too large or when multiple entrypoints need the same behavior.
+
 ### `docs/`
 
 Active documentation:

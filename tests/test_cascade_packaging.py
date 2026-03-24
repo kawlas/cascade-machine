@@ -28,9 +28,9 @@ class CascadePackagingTests(unittest.TestCase):
         content = aliases_path.read_text()
 
         expected_aliases = [
-            "alias quick='aider --model ollama_chat/qwen3:4b --auto-commits --yes'",
+            "alias quick='aider --model ollama_chat/devstral-small --auto-commits --yes'",
             "alias fast='aider --model ollama_chat/qwen3-coder --auto-commits --yes'",
-            "alias think='aider --model ollama_chat/deepseek-r1:8b --auto-commits --yes'",
+            "alias think='aider --model ollama_chat/deepseek-r1:14b --auto-commits --yes'",
             "alias cloud='aider --model groq/llama-3.3-70b-versatile --auto-commits --yes'",
             "alias smart='aider --model openrouter/mistralai/devstral-2 --auto-commits --yes'",
         ]
@@ -41,6 +41,7 @@ class CascadePackagingTests(unittest.TestCase):
     def test_install_creates_runtime_layout_in_clean_home(self):
         temp_home = tempfile.mkdtemp(prefix="cascade-home-")
         self.addCleanup(lambda: shutil.rmtree(temp_home, ignore_errors=True))
+        (Path(temp_home) / ".zshrc").write_text("")
 
         self.run_command("bash", "install.sh", "--force", env={"HOME": temp_home})
 
@@ -49,32 +50,34 @@ class CascadePackagingTests(unittest.TestCase):
             runtime_dir / "heal.sh",
             runtime_dir / "help.sh",
             runtime_dir / "router.sh",
+            runtime_dir / "lib" / "router_core.sh",
             runtime_dir / "docs" / "INSTALL.md",
             runtime_dir / "docs" / "COMMANDS.md",
             runtime_dir / ".env",
             runtime_dir / ".env.cascade",
-            Path(temp_home) / ".bashrc",
+            Path(temp_home) / ".zshrc",
         ]
 
         for path in expected_paths:
             self.assertTrue(path.exists(), f"missing installed path: {path}")
 
-    def test_router_uses_available_local_models(self):
+        shell_config = (Path(temp_home) / ".zshrc").read_text()
+        self.assertIn('source "$HOME/.cascade/aliases.sh" --load', shell_config)
+
+    def test_router_core_maps_local_models(self):
         quick = self.run_command(
             "bash",
-            "scripts/router.sh",
-            "best",
-            "fix typo in README",
+            "-lc",
+            "source scripts/lib/router_core.sh && local_model_for_task quick",
         )
         reason = self.run_command(
             "bash",
-            "scripts/router.sh",
-            "best",
-            "explain this bug in auth middleware",
+            "-lc",
+            "source scripts/lib/router_core.sh && local_model_for_task reason",
         )
 
-        self.assertIn("ollama_chat/qwen3:4b", quick.stdout.strip())
-        self.assertIn("ollama_chat/deepseek-r1:8b", reason.stdout.strip())
+        self.assertIn("ollama_chat/devstral-small", quick.stdout.strip())
+        self.assertIn("ollama_chat/deepseek-r1:14b", reason.stdout.strip())
 
     def test_help_output_lists_official_commands(self):
         result = self.run_command("bash", "scripts/help.sh", "help")
